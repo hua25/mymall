@@ -82,7 +82,6 @@
       </if>
     </trim>
   </insert>
-
   <update id="updateByPrimaryKeySelective" parameterType="com.mymall.pojo.Category" >
     update mymall_category
     <set >
@@ -107,7 +106,6 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-
   <update id="updateByPrimaryKey" parameterType="com.mymall.pojo.Category" >
     update mymall_category
     set parent_id = #{parentId,jdbcType=INTEGER},
@@ -115,7 +113,7 @@
       status = #{status,jdbcType=BIT},
       sort_order = #{sortOrder,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = update_time = now()
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

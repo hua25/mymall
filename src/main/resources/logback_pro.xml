@@ -11,8 +11,8 @@
     </appender>
 
     <appender name="mymall" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>E:/Temp/logs/mymalllog/mymall.log</File>
-        <!--<File>/developer/apache-tomcat-7.0.73/logs/mymall.log</File>-->
+        <!--<File>E:/Temp/logs/mymalllog/mymall.log</File>-->
+        <File>/developer/apache-tomcat-7.0.73/logs/mymall.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>/developer/apache-tomcat-7.0.73/logs/mymall.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
             <append>true</append>
@@ -25,11 +25,11 @@
 
 
     <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>E:/Temp/logs/mymalllog/error.log</File>
-        <!--<File>/developer/apache-tomcat-7.0.73/logs/error.log</File>-->
+        <!--<File>E:/Temp/logs/mymalllog/mymall.log</File>-->
+        <File>/developer/apache-tomcat-7.0.73/logs/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!--<fileNamePattern>/devsoft/apache-tomcat-7.0.73/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
-            <fileNamePattern>E:/Temp/logs/mymalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <fileNamePattern>/devsoft/apache-tomcat-7.0.73/logs/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>
+            <!--<fileNamePattern>E:/Temp/logs/mymalllog/error.log.%d{yyyy-MM-dd}.gz</fileNamePattern>-->
             <append>true</append>
             <maxHistory>10</maxHistory>
         </rollingPolicy>
@@ -50,7 +50,7 @@
 
 
 
-    <!-- mybatis log 日志 -->
+    <!--  mybatis log 日志 -->
 
     <logger name="com.mymall.dao" level="DEBUG"/>
 
