@@ -169,5 +169,45 @@
         WHERE t.username = #{username} AND t.password = #{password}
     </select>
 
+    <select id="checkEmail" resultType="int" parameterType="string">
+        SELECT COUNT(1)
+        FROM mymall_user t
+        WHERE t.email = #{email}
+    </select>
+
+    <select id="queryQueryByUsername" resultType="string" parameterType="string">
+        SELECT t.question
+        FROM mymall_user t
+        WHERE t.username = #{username}
+    </select>
+
+
+    <select id="checkAnswer" resultType="int" parameterType="map">
+        SELECT COUNT(1)
+        FROM mymall_user t
+        WHERE t.username = #{username}
+        AND t.question = #{question}
+        AND t.answer = #{answer}
+    </select>
+
+    <update id="updatePasswordByUsername" parameterType="map">
+      update mymall_user
+      set password = #{passwordNew},update_time = now()
+      where id = #{username}
+    </update>
+
+    <select id="checkPassword" resultType="int" parameterType="map">
+      SELECT COUNT(1)
+      FROM mymall_user t
+      WHERE t.id = #{userId}
+      AND t.password = #{password}
+    </select>
+
+    <select id="checkEmailByUserId" resultType="int" parameterType="map">
+        SELECT count(1)
+        from mymall_user
+        where email = #{email}
+        and id != #{userId}
+    </select>
 
 </mapper>
