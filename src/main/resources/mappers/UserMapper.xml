@@ -193,7 +193,7 @@
     <update id="updatePasswordByUsername" parameterType="map">
       update mymall_user
       set password = #{passwordNew},update_time = now()
-      where id = #{username}
+      where username = #{username}
     </update>
 
     <select id="checkPassword" resultType="int" parameterType="map">
