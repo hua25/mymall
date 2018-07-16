@@ -9,6 +9,7 @@ import com.mymall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,7 +29,7 @@ public class CategoryManageController {
     @Autowired
     private ICategoryService categoryService;
 
-    @RequestMapping("add_category.do")
+    @RequestMapping(value = "add_category.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") Integer parentId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -44,7 +45,7 @@ public class CategoryManageController {
         }
     }
 
-    @RequestMapping("set_category_name.do")
+    @RequestMapping(value = "set_category_name.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -61,7 +62,7 @@ public class CategoryManageController {
         }
     }
 
-    @RequestMapping("get_category.do")
+    @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getChildernParallelCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -76,7 +77,7 @@ public class CategoryManageController {
         }
     }
 
-    @RequestMapping("get_deep_category.do")
+    @RequestMapping(value = "get_deep_category.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse getCategoryAndDeepChildernCategory(HttpSession session, @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         User user = (User) session.getAttribute(Const.CURRENT_USER);
