@@ -137,4 +137,33 @@
       select count(*) from mymall_cart where checked = 0 and user_id = #{userId}
     </select>
 
+    <delete id="deleteByUserIdProductIds" parameterType="map">
+        DELETE
+        FROM mymall_cart t
+        WHERE t.user_id = #{userId}
+        <if test="productIds != null">
+            AND t.product_id IN
+            <foreach collection="productIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </delete>
+
+    <update id="checkedOrUncheckedProduct" parameterType="map">
+        UPDATE mymall_cart t SET t.checked = #{checked},t.update_time = NOW()
+        WHERE t.user_id = #{userId}
+        <if test="productId != null">
+            AND t.product_id = #{productId}
+        </if>
+    </update>
+
+    <!--查询用户购物车中商品数量，没有商品，使用IFNULL()函数判断，返回0-->
+    <select id="selectCartProductCount" resultType="int" parameterType="int">
+        SELECT IFNULL(SUM(t.quantity),0) AS COUNT
+        FROM mymall_cart t
+        WHERE t.user_id = #{userId}
+    </select>
+
+
 </mapper>

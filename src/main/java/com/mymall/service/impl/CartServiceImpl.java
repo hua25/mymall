@@ -1,5 +1,6 @@
 package com.mymall.service.impl;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.mymall.common.Const;
 import com.mymall.common.ResponseCode;
@@ -39,10 +40,10 @@ public class CartServiceImpl implements ICartService {
      */
     @Override
     public ServerResponse<CartVO> add(Integer userId, Integer productId, Integer count) {
-        if (productId == null || count == null){
+        if (productId == null || count == null) {
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
-            Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
+        Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
         if (cart == null) {
             //商品不在该用户的购物车中，需要新增一个
             Cart cartItem = new Cart();
@@ -58,12 +59,15 @@ public class CartServiceImpl implements ICartService {
             cart.setQuantity(count);
             cartMapper.updateByPrimaryKeySelective(cart);
         }
-        CartVO cartVO = this.getCartVoLimit(userId);
-
-        return ServerResponse.createBySuccess(cartVO);
+        return this.list(userId);
     }
 
-
+    /**
+     * 获取用户购物车信息，根据商品库存判断商品数量，并计算购物车总价
+     *
+     * @param userId
+     * @return
+     */
     private CartVO getCartVoLimit(Integer userId) {
         CartVO cartVO = new CartVO();
 
@@ -126,10 +130,103 @@ public class CartServiceImpl implements ICartService {
         return cartVO;
     }
 
+    /**
+     * 判断用户购物车中商品是否全选
+     *
+     * @param userId
+     * @return
+     */
     private boolean getAllCheckedStatus(Integer userId) {
         if (userId == null) {
             return false;
         }
         return cartMapper.selectCartProductCheckedStatusByUserId(userId) == 0 ? true : false;
+    }
+
+    /**
+     * 更新购物车中的商品数量
+     *
+     * @param userId    用户id
+     * @param productId 产品id
+     * @param count     商品数量
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVO> update(Integer userId, Integer productId, Integer count) {
+        if (productId == null || count == null) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+        }
+        Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
+
+        //判断购物车中是否已存在
+        if (cart != null) {
+            cart.setQuantity(count);
+        }
+        //更新购物车
+        cartMapper.updateByPrimaryKeySelective(cart);
+
+        //重新计算购物车总价
+        return this.list(userId);
+    }
+
+    /**
+     * 删除购物车中的商品
+     *
+     * @param userId     用户id
+     * @param productIds 商品id，多个id之间用逗号分隔
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVO> deleteProduct(Integer userId, String productIds) {
+        //使用Guava的Splitter分割字符串并转为集合
+        List<String> productIdList = Splitter.on(",").splitToList(productIds);
+
+        if (CollectionUtils.isEmpty(productIdList)) {
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+        }
+
+        cartMapper.deleteByUserIdProductIds(userId, productIdList);
+        return this.list(userId);
+    }
+
+    /**
+     * 查询用户购物车信息
+     *
+     * @param userId 用户id
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVO> list(Integer userId) {
+        CartVO cartVO = this.getCartVoLimit(userId);
+        return ServerResponse.createBySuccess(cartVO);
+    }
+
+    /**
+     * 选择或者反选购物车中所有的商品
+     *
+     * @param userId    用户id
+     * @param checked   选择状态
+     * @param productId 产品id
+     * @return
+     */
+    @Override
+    public ServerResponse<CartVO> selectOrUnSelect(Integer userId, Integer checked, Integer productId) {
+        cartMapper.checkedOrUncheckedProduct(userId, checked, null);
+        return this.list(userId);
+    }
+
+    /**
+     * 查询用户购物车中的产品数量
+     *
+     * @param userId 用户id
+     * @return
+     */
+    @Override
+    public ServerResponse<Integer> getCartProductCount(Integer userId) {
+        if (userId == null){
+            return ServerResponse.createBySuccess(0);
+        }
+        int count = cartMapper.selectCartProductCount(userId);
+        return ServerResponse.createBySuccess(count);
     }
 }
